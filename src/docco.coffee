@@ -2,7 +2,7 @@
 # documentation generator. It produces HTML
 # that displays your comments alongside your code. Comments are passed through
 # [Markdown](http://daringfireball.net/projects/markdown/syntax), and code is
-# passed through [Pygments](http://pygments.org/) syntax highlighting.
+# passed through [Hightlight.JS](https://github.com/isagalaev/highlight.js/) syntax highlighting.
 # This page is the result of running Docco against its own source file.
 #
 # If you install Docco, you can run it from the command-line:
@@ -15,9 +15,7 @@
 # The [source for Docco](http://github.com/jashkenas/docco) is available on GitHub,
 # and released under the MIT license.
 #
-# To install Docco, first make sure you have [Node.js](http://nodejs.org/),
-# [Pygments](http://pygments.org/) (install the latest dev version of Pygments
-# from [its Mercurial repo](http://dev.pocoo.org/hg/pygments-main)), and
+# To install Docco, first make sure you have [Node.js](http://nodejs.org/) and
 # [CoffeeScript](http://coffeescript.org/). Then, with NPM:
 #
 #     sudo npm install -g docco
@@ -95,11 +93,11 @@ parse = (source, code) ->
   save docs_text, code_text
   sections
 
-# Highlights a single chunk of CoffeeScript code, using **Pygments** over stdio,
+# Highlights a single chunk of CoffeeScript code, using **Highlight.JS**,
 # and runs the text of its corresponding comment through **Markdown**, using
 # [Showdown.js](http://attacklab.net/showdown/).
 #
-# We process the entire file in a single call to Pygments by inserting little
+# We process the entire file in a single call to Highlight.JS by inserting little
 # marker comments between each section and then splitting the result string
 # wherever our markers occur.
 highlight = (source, sections, callback) ->
@@ -139,7 +137,7 @@ highlighter = require('./../vendor/highlight')
 {spawn, exec} = require 'child_process'
 
 # Languages are stored in JSON format in the file `resources/languages.json`
-# Each item maps the file extension to the name of the Pygments lexer and the
+# Each item maps the file extension to the name of the Highlight.JS lexer and the
 # symbol that indicates a comment. To add a new language, modify the file.
 languages = JSON.parse fs.readFileSync(__dirname + "/../resources/languages.json").toString()
 
@@ -153,11 +151,11 @@ for ext, l of languages
   # and interpolations...
   l.comment_filter = new RegExp('(^#![/]|^\\s*#\\{)')
 
-  # The dividing token we feed into Pygments, to delimit the boundaries between
+  # The dividing token we feed into Highlight.js, to delimit the boundaries between
   # sections.
   l.divider_text = '\n' + l.symbol + 'DIVIDER\n'
 
-  # The mirror of `divider_text` that we expect Pygments to return. We can split
+  # The mirror of `divider_text` that we expect Highlight.js to return. We can split
   # on this to recover the original sections.
   # Note: the class is "c" for Python and "c1" for the other languages
   l.divider_html = new RegExp('\\n*<span class="c1?">' + l.symbol + 'DIVIDER<\\/span>\\n*')
@@ -195,10 +193,10 @@ docco_template  = template fs.readFileSync(__dirname + '/../resources/docco.jst'
 # The CSS styles we'd like to apply to the documentation.
 docco_styles    = fs.readFileSync(__dirname + '/../resources/docco.css').toString()
 
-# The start of each Pygments highlight block.
+# The start of each Hightlight highlight block.
 highlight_start = '<div class="highlight"><pre>'
 
-# The end of each Pygments highlight block.
+# The end of each Hightlight highlight block.
 highlight_end   = '</pre></div>'
 
 # Run the script.
